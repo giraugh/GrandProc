@@ -1,19 +1,18 @@
 require "car"
 
-function love.init()
-
+function love.load()
+  car1 = placeCar(100, 100, love.graphics.newImage("graphics/car_blue.png"))
+  car2 = placeCar(200, 200, love.graphics.newImage("graphics/car_red.png"))
+  car2.controls = {left = "a", right = "d", up = "w", down = "s"}
 end
 
 function love.update(dt)
-  handleCarControls(dt)
-  updateCar(dt)
-end
-
-function love.load()
-  placeCar()
+  updateCar(car1, dt)
+  updateCar(car2, dt)
 end
 
 function love.draw()
-  carGraphic = love.graphics.newImage("graphics/car_blue.png")
-  love.graphics.draw (carGraphic, car.x, car.y, car.angle + math.pi / 2, 1, 1, 16, 60)
+  drawCar(car1)
+  drawCar(car2)
+
 end
