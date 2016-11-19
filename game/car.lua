@@ -1,24 +1,32 @@
 --Car Constants
-CAR_SPEED_DAMPENING = 0.1 --  Velocity lost per second
-CAR_ANGLE_DAMPING = 0.05
-CAR_TURN_SPEED = .06 -- Angle in radians per second
+CAR_SPEED_DAMPENING = 0.02          -- Velocity negative interpolation per second
+CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
+CAR_TURN_SPEED = .08                 -- Angle in radians per second
+CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
 
-CAR_MAX_SPEED = 200 -- Max velocity
-CAR_ACCELERATION_SPEED = 110 -- Speed gained per second
+CAR_MAX_SPEED =  300                -- Max velocity
+CAR_ACCELERATION_SPEED = 210        -- Speed gained per second
 
-CAR_MAX_REVERSE_SPEED = -80 -- Min velocity
+CAR_MAX_REVERSE_SPEED = -80         -- Min velocity
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 
+--helper functions
+function sign(x)
+  if x == 0 then return x end
+  if x > 0 then return 1 end
+  return -1
+end
+
 function handleCarControls(car, delta)
-  --get inputs
+  -- get inputs
   local ainput, vinput
   ainput = (love.keyboard.isDown(car.controls.right) and 1 or 0) - (love.keyboard.isDown(car.controls.left) and 1 or 0)
   vinput = (love.keyboard.isDown(car.controls.up) and 1 or 0)    - (love.keyboard.isDown(car.controls.down) and 1 or 0)
 
-  --apply angular velocity
-  car.avelocity = car.avelocity + (ainput * (CAR_TURN_SPEED * delta))
+  -- apply angular velocity
+  car.avelocity = math.min(CAR_MAX_TURN_SPEED, car.avelocity + (sign(car.velocity) * ainput * (CAR_TURN_SPEED * delta)))
 
-  --apply velocity
+  -- apply velocity
   car.velocity = math.min(CAR_MAX_SPEED, car.velocity + (vinput * CAR_ACCELERATION_SPEED * delta))
 
 end
@@ -37,22 +45,25 @@ function newCar(x, y, image)
 end
 
 function updateCar(car, delta)
-  --Handle Inputs
+  -- Handle Inputs
   handleCarControls(car, delta)
 
-  --Apply Velocity to position
+  -- Apply Velocity to position
   carAngle = car.angle
   car.x = car.x + math.cos(carAngle) * delta * car.velocity
-  car.y = car.y + math.sin(carAngle) *  delta * car.velocity
+  car.y = car.y + math.sin(carAngle) * delta * car.velocity
 
-  --apply damping to velocity
-  if car.velocity > 0 then
-    car.velocity = math.max(0, car.velocity - CAR_SPEED_DAMPENING * delta)
-  else
-    car.velocity = math.min(0, car.velocity + CAR_SPEED_DAMPENING * delta)
+  -- Apply damping to velocity
+  if (not (love.keyboard.isDown(car.controls.up) or love.keyboard.isDown(car.controls.down))) then
+    car.velocity = car.velocity  * (1 - CAR_SPEED_DAMPENING)
   end
 
-  --Add Angular Velocity to angle
+  -- Apply damping to angular velocity
+  if (not (love.keyboard.isDown(car.controls.right) or love.keyboard.isDown(car.controls.left))) then
+    car.avelocity = car.avelocity  * (1 - CAR_ANGLE_DAMPENING)
+  end
+
+  -- Add Angular Velocity to angle
   car.angle = car.angle + car.avelocity
 end
 
