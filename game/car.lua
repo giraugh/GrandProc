@@ -1,13 +1,15 @@
+PIXELS_PER_METER = 20
+
 --Car Constants
-CAR_SPEED_DAMPENING = 0.02          -- Velocity negative interpolation per second
+CAR_DRAG = 0.4257                   -- Drag constant (Air resistance)
+CAR_ROLLING_FRICTION = 12.8         -- Rolling friction lost
 CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
-CAR_TURN_SPEED = .08                 -- Angle in radians per second
+CAR_TURN_SPEED = .08                -- Angle in radians per second
 CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
 
-CAR_MAX_SPEED =  300                -- Max velocity
-CAR_ACCELERATION_SPEED = 210        -- Speed gained per second
+CAR_ENGINE_FORCE = 40000            -- Force of engine in newtons
+CAR_MASS = 1500                     -- Mass of car in kg
 
-CAR_MAX_REVERSE_SPEED = -80         -- Min velocity
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 
 --helper functions
@@ -26,9 +28,8 @@ function handleCarControls(car, delta)
   -- apply angular velocity
   car.avelocity = math.min(CAR_MAX_TURN_SPEED, car.avelocity + (sign(car.velocity) * ainput * (CAR_TURN_SPEED * delta)))
 
-  -- apply velocity
-  car.velocity = math.min(CAR_MAX_SPEED, car.velocity + (vinput * CAR_ACCELERATION_SPEED * delta))
-
+  -- Apply traction
+  car.traction = CAR_ENGINE_FORCE * vinput
 end
 
 
@@ -36,6 +37,7 @@ function newCar(x, y, image)
   local car = {}
   car.x = x
   car.y = y
+  car.traction = 0
   car.velocity = 0
   car.angle = 0
   car.avelocity = 0
@@ -48,25 +50,33 @@ function updateCar(car, delta)
   -- Handle Inputs
   handleCarControls(car, delta)
 
+  -- calculate drag
+  drag = CAR_DRAG * car.velocity * math.abs(car.velocity)
+
+  -- calculate rolling friction
+  rollingFriction = CAR_ROLLING_FRICTION * car.velocity
+
+  -- Apply forces to car
+  netForce = car.traction - drag - rollingFriction
+  acceleration = netForce / CAR_MASS
+  car.velocity = car.velocity + delta * acceleration
+
   -- Apply Velocity to position
   carAngle = car.angle
   car.x = car.x + math.cos(carAngle) * delta * car.velocity
   car.y = car.y + math.sin(carAngle) * delta * car.velocity
 
-  -- Apply damping to velocity
-  if (not (love.keyboard.isDown(car.controls.up) or love.keyboard.isDown(car.controls.down))) then
-    car.velocity = car.velocity  * (1 - CAR_SPEED_DAMPENING)
-  end
 
   -- Apply damping to angular velocity
   if (not (love.keyboard.isDown(car.controls.right) or love.keyboard.isDown(car.controls.left))) then
-    car.avelocity = car.avelocity  * (1 - CAR_ANGLE_DAMPENING)
+    car.avelocity = car.avelocity  * (1 - CAR_ANGLE_DAMPENING * delta)
   end
+
 
   -- Add Angular Velocity to angle
   car.angle = car.angle + car.avelocity
 end
 
 function drawCar(car)
-  love.graphics.draw (car.image, car.x, car.y, car.angle + math.pi / 2, 1, 1, 16, 60)
+  love.graphics.draw (car.image, car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER, car.angle + math.pi / 2, 1, 1, 16, 60)
 end
