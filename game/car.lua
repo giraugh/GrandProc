@@ -1,3 +1,4 @@
+--Car Constants
 CAR_SPEED_DAMPENING = 0.1 --  Velocity lost per second
 CAR_ANGLE_DAMPING = 0.05
 CAR_TURN_SPEED = .06 -- Angle in radians per second
@@ -9,7 +10,6 @@ CAR_MAX_REVERSE_SPEED = -80 -- Min velocity
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 
 function handleCarControls(car, delta)
-
   --get inputs
   local ainput, vinput
   ainput = (love.keyboard.isDown(car.controls.right) and 1 or 0) - (love.keyboard.isDown(car.controls.left) and 1 or 0)
@@ -24,7 +24,7 @@ function handleCarControls(car, delta)
 end
 
 
-function placeCar(x, y, image)
+function newCar(x, y, image)
   local car = {}
   car.x = x
   car.y = y

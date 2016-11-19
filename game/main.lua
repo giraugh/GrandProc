@@ -1,8 +1,9 @@
+require "graphics.import"
 require "car"
 
 function love.load()
-  car1 = placeCar(100, 100, love.graphics.newImage("graphics/car_blue.png"))
-  car2 = placeCar(200, 200, love.graphics.newImage("graphics/car_red.png"))
+  car1 = newCar(100, 100, IMAGE_CAR_BLUE)
+  car2 = newCar(200, 200, IMAGE_CAR_RED)
   car2.controls = {left = "a", right = "d", up = "w", down = "s"}
 end
 
@@ -14,5 +15,4 @@ end
 function love.draw()
   drawCar(car1)
   drawCar(car2)
-
 end
