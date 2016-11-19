@@ -1,11 +1,11 @@
-CAR_SPEED_DAMPENING = 0.1
-CAR_TURN_SPEED = .06
+CAR_SPEED_DAMPENING = 0.1 --  Velocity lost per second
+CAR_TURN_SPEED = .06 -- Angle in radians per second
 
-CAR_MAX_SPEED = 100
-CAR_ACCELERATION_SPEED = 100
+CAR_MAX_SPEED = 100 -- Max velocity
+CAR_ACCELERATION_SPEED = 100 -- Speed gained per second
 
-CAR_MAX_REVERSE_SPEED = -100
-CAR_REVERSE_ACCELERATION_SPEED = 100
+CAR_MAX_REVERSE_SPEED = -100 -- Min velocity
+CAR_REVERSE_ACCELERATION_SPEED = 100 -- Speed gained per second
 
 function handleCarControls(delta)
 
