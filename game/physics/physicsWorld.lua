@@ -1,6 +1,6 @@
 function initPhysicsWorld()
   love.physics.setMeter(20)
-  world = love.physics.newWorld(0, 0, true)
+  world = love.physics.newWorld(0, 0, false)
 end
 
 CAR_WEIGHT = 1
