@@ -4,10 +4,10 @@ PIXELS_PER_METER = 20
 CAR_DRAG = 0.4257                   -- Drag constant (Air resistance)
 CAR_ROLLING_FRICTION = 12.8         -- Rolling friction lost
 CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
-CAR_TURN_SPEED = .08                -- Angle in radians per second
+CAR_HANDLING = 0.2                  -- Angle in radians per second
 CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
 
-CAR_ENGINE_FORCE = 4000            -- Force of engine in newtons
+CAR_ENGINE_FORCE = 4000             -- Force of engine in newtons
 CAR_MASS = 1500                     -- Mass of car in kg
 
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
@@ -30,7 +30,7 @@ function handleCarControls(car, delta)
   vinput = (love.keyboard.isDown(car.controls.up) and 1 or 0)    - (love.keyboard.isDown(car.controls.down) and 1 or 0)
 
   -- apply angular velocity
-  car.avelocity = math.min(CAR_MAX_TURN_SPEED, car.avelocity + (sign(car.velocity) * ainput * (CAR_TURN_SPEED * delta)))
+  car.turnForce = CAR_HANDLING * ainput * math.abs(vinput)
 
   -- Apply traction
   car.traction = CAR_ENGINE_FORCE * vinput
@@ -66,6 +66,9 @@ function updateCar(car, delta)
   acceleration = netForce / CAR_MASS
   car.velocity = car.velocity + delta * acceleration
 
+  -- Apply turning force
+  car.angle = car.angle + car.turnForce * delta * car.velocity
+
   -- Apply Velocity to position
   carAngle = car.angle
   car.x = car.x + math.cos(carAngle) * delta * car.velocity
@@ -87,15 +90,6 @@ function updateCar(car, delta)
     end
   end
 
-
-  -- Apply damping to angular velocity
-  if (not (love.keyboard.isDown(car.controls.right) or love.keyboard.isDown(car.controls.left))) then
-    car.avelocity = car.avelocity  * (1 - CAR_ANGLE_DAMPENING * delta)
-  end
-
-
-  -- Add Angular Velocity to angle
-  car.angle = car.angle + car.avelocity
 end
 
 function drawCar(car)
