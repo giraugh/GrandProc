@@ -7,10 +7,13 @@ CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation p
 CAR_TURN_SPEED = .08                -- Angle in radians per second
 CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
 
-CAR_ENGINE_FORCE = 40000            -- Force of engine in newtons
+CAR_ENGINE_FORCE = 4000            -- Force of engine in newtons
 CAR_MASS = 1500                     -- Mass of car in kg
 
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
+
+LOOP_SCREEN = true
+PRINT_SPEED = true
 
 --helper functions
 function sign(x)
@@ -58,6 +61,7 @@ function updateCar(car, delta)
 
   -- Apply forces to car
   netForce = car.traction - drag - rollingFriction
+  print(netForce)
   acceleration = netForce / CAR_MASS
   car.velocity = car.velocity + delta * acceleration
 
@@ -65,6 +69,22 @@ function updateCar(car, delta)
   carAngle = car.angle
   car.x = car.x + math.cos(carAngle) * delta * car.velocity
   car.y = car.y + math.sin(carAngle) * delta * car.velocity
+
+  -- Loop the car back onto the screen if need be
+  if LOOP_SCREEN then
+    if car.x < -5 then
+      car.x = 40
+    end
+    if car.x > 40 then
+      car.x = -5
+    end
+    if car.y < -5 then
+      car.y = 40
+    end
+    if car.y > 40 then
+      car.y = -5
+    end
+  end
 
 
   -- Apply damping to angular velocity
@@ -79,4 +99,7 @@ end
 
 function drawCar(car)
   love.graphics.draw (car.image, car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER, car.angle + math.pi / 2, 1, 1, 16, 60)
+  if PRINT_SPEED then
+    love.graphics.print(string.format("%d kph", car.velocity * 3.6), car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER)
+  end
 end
