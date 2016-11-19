@@ -18,5 +18,5 @@ end
 
 function love.draw()
   carGraphic = love.graphics.newImage("graphics/car_blue.png")
-  love.graphics.draw (carGraphic, car.body:getX() + 16, car.body:getY() + 32, car.body:getAngle() + math.pi/2)
+  love.graphics.draw (carGraphic, car.body:getX(), car.body:getY(), car.body:getAngle() + math.pi/2)
 end
