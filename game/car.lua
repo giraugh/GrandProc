@@ -1,5 +1,5 @@
 CAR_SPEED_DAMPENING = 0.1
-CAR_TURN_SPEED = 1
+CAR_TURN_SPEED = .06
 
 CAR_MAX_SPEED = 100
 CAR_ACCELERATION_SPEED = 100
@@ -10,11 +10,11 @@ CAR_REVERSE_ACCELERATION_SPEED = 100
 function handleCarControls(delta)
 
   if love.keyboard.isDown("right") then
-    car.angle = car.angle + CAR_TURN_SPEED * delta
+    car.avelocity = car.avelocity + CAR_TURN_SPEED * delta
   end
 
   if love.keyboard.isDown("left") then
-    car.angle = car.angle - CAR_TURN_SPEED * delta
+    car.avelocity = car.avelocity - CAR_TURN_SPEED * delta
   end
 
   if love.keyboard.isDown("up") then
@@ -34,6 +34,7 @@ function placeCar()
   car.y = 620 / 2
   car.velocity = 0
   car.angle = 0
+  car.avelocity = 0
 end
 
 function updateCar(delta)
@@ -47,4 +48,6 @@ function updateCar(delta)
   else
     car.velocity = math.min(0, car.velocity + CAR_SPEED_DAMPENING * delta)
   end
+
+  car.angle = car.angle + car.avelocity
 end
