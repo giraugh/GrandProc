@@ -30,7 +30,7 @@ function handleCarControls(car, delta)
   vinput = (love.keyboard.isDown(car.controls.up) and 1 or 0)    - (love.keyboard.isDown(car.controls.down) and 1 or 0)
 
   -- apply angular velocity
-  car.turnForce = CAR_HANDLING * ainput * math.abs(vinput)
+  car.turnForce = CAR_HANDLING * ainput
 
   -- Apply traction
   car.traction = CAR_ENGINE_FORCE * vinput
