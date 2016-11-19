@@ -1,4 +1,4 @@
---Car Constants
+-- CAR CONSTANTS --
 CAR_SPEED_DAMPENING = 0.02          -- Velocity negative interpolation per second
 CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
 CAR_TURN_SPEED = .08                 -- Angle in radians per second
@@ -10,13 +10,14 @@ CAR_ACCELERATION_SPEED = 210        -- Speed gained per second
 CAR_MAX_REVERSE_SPEED = -80         -- Min velocity
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 
---helper functions
+-- HELPER FUNCTIONS --
 function sign(x)
   if x == 0 then return x end
   if x > 0 then return 1 end
   return -1
 end
 
+-- CAR METHODS --
 function handleCarControls(car, delta)
   -- get inputs
   local ainput, vinput
