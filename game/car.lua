@@ -15,13 +15,14 @@ CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 LOOP_SCREEN = true
 PRINT_SPEED = true
 
---helper functions
+-- HELPER FUNCTIONS --
 function sign(x)
   if x == 0 then return x end
   if x > 0 then return 1 end
   return -1
 end
 
+-- CAR METHODS --
 function handleCarControls(car, delta)
   -- get inputs
   local ainput, vinput
