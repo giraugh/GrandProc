@@ -62,7 +62,6 @@ function updateCar(car, delta)
 
   -- Apply forces to car
   netForce = car.traction - drag - rollingFriction
-  print(netForce)
   acceleration = netForce / CAR_MASS
   car.velocity = car.velocity + delta * acceleration
 

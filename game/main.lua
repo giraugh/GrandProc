@@ -1,10 +1,15 @@
 require "graphics.import"
 require "tiles"
+require "generate"
 require "car"
 
 function love.load()
-  --Load (Generate) Background
+  --Create Background
   createTileWorld()
+
+  --Generate Map
+  set = generateMap()
+  setTileWorldFromSet(set)
 
   --Create Players
   car1 = newCar(10, 10, IMAGE_CAR_BLUE)
