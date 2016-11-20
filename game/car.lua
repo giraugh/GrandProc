@@ -1,11 +1,13 @@
 PIXELS_PER_METER = 20
 
 --Car Constants
-CAR_DRAG = 0.4257                   -- Drag constant (Air resistance)
+CAR_DRAG = 4.257                   -- Drag constant (Air resistance)
 CAR_ROLLING_FRICTION = 12.8         -- Rolling friction lost
 CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
-CAR_HANDLING = 0.2                  -- Angle in radians per second
-CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
+
+CAR_HANDLING = 0.2                  -- Max turn size
+CAR_TURN_SPEED = .2                 -- Turn size per second
+CAR_STABELIZE_SPEED = .2
 
 CAR_ENGINE_FORCE = 20000             -- Force of engine in newtons
 CAR_MASS = 1500                     -- Mass of car in kg
@@ -22,6 +24,10 @@ function sign(x)
   return -1
 end
 
+function clamp(x, min, max)
+  return math.max(min, math.min(x, max))
+end
+
 -- CAR METHODS --
 function handleCarControls(car, delta)
   -- get inputs
@@ -30,7 +36,9 @@ function handleCarControls(car, delta)
   vinput = (love.keyboard.isDown(car.controls.up) and 1 or 0)    - (love.keyboard.isDown(car.controls.down) and 1 or 0)
 
   -- apply angular velocity
-  car.turnForce = CAR_HANDLING * ainput
+  car.turnForce = clamp(car.turnForce + ainput * CAR_TURN_SPEED * delta * 2, -CAR_HANDLING, CAR_HANDLING)
+
+  car.turnForce = car.turnForce - CAR_STABELIZE_SPEED * car.turnForce
 
   -- Apply traction
   car.traction = CAR_ENGINE_FORCE * vinput
@@ -45,6 +53,7 @@ function newCar(x, y, image)
   car.velocity = 0
   car.angle = 0
   car.avelocity = 0
+  car.turnForce = 0
   car.image = image
   car.controls = {left = "left", right = "right", up = "up", down = "down"}
   return car
