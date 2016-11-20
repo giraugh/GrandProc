@@ -76,11 +76,16 @@ function updateCar(car, delta)
   -- calculate drag
   drag = CAR_DRAG * car.velocity * math.abs(car.velocity)
 
+  terrainFriction = 1
+  if car:getTileAtFeet() == "Grass" then
+    terrainFriction = 3
+  end
+
   -- calculate rolling friction
-  rollingFriction = CAR_ROLLING_FRICTION * car.velocity
+  rollingFriction = CAR_ROLLING_FRICTION * terrainFriction * car.velocity
 
   -- calculate turning friction
-  turningFriction = math.sin(math.abs(car.turnForce)) * CAR_TURN_FRICTION * car.velocity * math.abs(car.velocity)
+  turningFriction = math.sin(math.abs(car.turnForce)) * terrainFriction * CAR_TURN_FRICTION * car.velocity * math.abs(car.velocity)
 
   -- Apply forces to car
   netForce = car.traction - drag - rollingFriction - turningFriction
