@@ -4,10 +4,11 @@ PIXELS_PER_METER = 20
 CAR_DRAG = 4.257                   -- Drag constant (Air resistance)
 CAR_ROLLING_FRICTION = 12.8         -- Rolling friction lost
 CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation per second
+CAR_TURN_FRICTION = 200
 
-CAR_HANDLING = 0.2                  -- Max turn size
-CAR_TURN_SPEED = .2                 -- Turn size per second
-CAR_STABELIZE_SPEED = .2
+CAR_HANDLING = 2                  -- Max turn size
+CAR_TURN_SPEED = 2                 -- Turn size per second
+CAR_STABELIZE_SPEED = 10
 
 CAR_ENGINE_FORCE = 20000             -- Force of engine in newtons
 CAR_MASS = 1500                     -- Mass of car in kg
@@ -36,9 +37,9 @@ function handleCarControls(car, delta)
   vinput = (love.keyboard.isDown(car.controls.up) and 1 or 0)    - (love.keyboard.isDown(car.controls.down) and 1 or 0)
 
   -- apply angular velocity
-  car.turnForce = clamp(car.turnForce + ainput * CAR_TURN_SPEED * delta * 2, -CAR_HANDLING, CAR_HANDLING)
+  car.turnForce = clamp(car.turnForce + ainput * CAR_TURN_SPEED * delta, -CAR_HANDLING, CAR_HANDLING)
 
-  car.turnForce = car.turnForce - CAR_STABELIZE_SPEED * car.turnForce
+  car.turnForce = car.turnForce - CAR_STABELIZE_SPEED * car.turnForce * delta
 
   -- Apply traction
   car.traction = CAR_ENGINE_FORCE * vinput
@@ -56,7 +57,7 @@ function newCar(x, y, image)
   car.turnForce = 0
   car.image = image
   car.controls = {left = "left", right = "right", up = "up", down = "down"}
-  
+
   function car:getScreenPos()
     return self.x * PIXELS_PER_METER, self.y * PIXELS_PER_METER
   end
@@ -78,8 +79,11 @@ function updateCar(car, delta)
   -- calculate rolling friction
   rollingFriction = CAR_ROLLING_FRICTION * car.velocity
 
+  -- calculate turning friction
+  turningFriction = math.sin(math.abs(car.turnForce)) * CAR_TURN_FRICTION * car.velocity * math.abs(car.velocity)
+
   -- Apply forces to car
-  netForce = car.traction - drag - rollingFriction
+  netForce = car.traction - drag - rollingFriction - turningFriction
   acceleration = netForce / CAR_MASS
   car.velocity = car.velocity + delta * acceleration
 
