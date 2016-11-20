@@ -1,3 +1,8 @@
+--ext
+require "ext.TSerial"
+require "ext.console"
+
+--script
 require "graphics.import"
 require "tiles"
 require "generate"
@@ -33,4 +38,8 @@ function love.draw()
 
   --Draw Foreground
   drawTileWorldForeground()
+
+  --Draw Console
+  trace.draw()
+
 end

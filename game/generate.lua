@@ -1,5 +1,93 @@
+TEMPLATES = {
+  MICRO_SIZE = {5, 5},
+  MACRO_SIZE = {7, 7},
+  MICRO = {
+    [[
+ggggg
+#####
+-----
+#####
+ggggg
+    ]],
+
+    [[
+g#|#g
+g#|#g
+g#|#g
+g#|#g
+g#|#g
+    ]],
+
+    [[
+/####
+#----
+#|/##
+#|#gg
+#|#gg
+    ]],
+
+    [[
+#|#gg
+#|#gg
+#|###
+#\---
+#####
+    ]],
+
+    [[
+gg#|#
+gg#|#
+###|#
+---/#
+#####
+    ]],
+
+    [[
+#####
+---\#
+###|#
+gg#|#
+gg#|#
+    ]],
+  },
+  MACRO = {
+    [[
+/-----\
+|ggggg|
+|ggggg|
+|ggggg|
+|ggggg|
+|ggggg|
+\-----/
+    ]]
+  },
+}
+
+
+
 function generateMap()
+  local rooms = {}
+  rooms.width =  TEMPLATES.MACRO_SIZE[1]
+  rooms.height = TEMPLATES.MACRO_SIZE[2]
+
+  local chosen = TEMPLATES.MACRO[math.random(1, #TEMPLATES.MACRO)]
+  rooms = decipherMacro(chosen)
+
   return generateTest()
+end
+
+function decipherMacro(mac)
+  --create a 2d array from the string
+  local n = 1
+  local maca = {}
+  for c in mac:gmatch"." do
+    if c == "\n" then
+      n = n + 1
+    else
+      maca[n] = (maca[n] or "") .. c
+    end
+  end
+  print(maca)
 end
 
 function generateEmpty()
