@@ -7,7 +7,7 @@ CAR_ANGLE_DAMPENING = 0.07          -- Angular velocity negative interpolation p
 CAR_HANDLING = 0.2                  -- Angle in radians per second
 CAR_MAX_TURN_SPEED = .1             -- Max angular velocity per second
 
-CAR_ENGINE_FORCE = 4000             -- Force of engine in newtons
+CAR_ENGINE_FORCE = 20000             -- Force of engine in newtons
 CAR_MASS = 1500                     -- Mass of car in kg
 
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
