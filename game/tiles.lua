@@ -46,6 +46,15 @@ function setTileWorldFromSet(set)
   end
 end
 
+function tileAtPosition(x, y)
+  x = math.floor(x / 32)
+  y = math.floor(y / 32)
+  if (x <= 0 or x >= t_world.size.x or y <= 0 or y >= t_world.size.y) then
+    return nil
+  end
+  return t_world[x][y]
+end
+
 function drawTileWorldBackground()
   for i = 1, t_world.size.x do
     for j = 1, t_world.size.y do

@@ -56,6 +56,15 @@ function newCar(x, y, image)
   car.turnForce = 0
   car.image = image
   car.controls = {left = "left", right = "right", up = "up", down = "down"}
+  
+  function car:getScreenPos()
+    return self.x * PIXELS_PER_METER, self.y * PIXELS_PER_METER
+  end
+
+  function car:getTileAtFeet()
+    return (tileAtPosition(self:getScreenPos()) or {name = "None"}).name
+  end
+
   return car
 end
 
@@ -103,6 +112,7 @@ end
 function drawCar(car)
   love.graphics.draw (car.image, car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER, car.angle + math.pi / 2, 1, 1, 16, 60)
   if PRINT_SPEED then
-    love.graphics.print(string.format("%d kph", car.velocity * 3.6), car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER)
+    love.graphics.print(string.format("%d kph", car.velocity * 3.6), car:getScreenPos())
+    love.graphics.print(car:getTileAtFeet(), car.x * PIXELS_PER_METER, car.y * PIXELS_PER_METER + 32)
   end
 end

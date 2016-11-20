@@ -11,8 +11,10 @@ function generateMap()
 end
 
 function generateTile(x, y)
-  -- I dont know why i decided to do this
+  return testMap(x, y)
+end
 
+function testMap(x, y)
   -- GENERATE TEST TRACK --
   local ch = "Grass"
   if x == 5 then ch = "Road_Grass_E" end
