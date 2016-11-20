@@ -5,6 +5,9 @@ TEMPLATES = {
   MACRO = {
 [[
 r--\
+|gg|
+|gg|
+L--/
 ]]
   },
 }

@@ -24,32 +24,32 @@ g#|#g
 
 TEMPLATES.MICRO["r"] = [[
 ggggg
-r####
-#----
-#|r##
-#|#gg
+gr###
+g#---
+g#|r#
+g#|#g
 ]]
 
 TEMPLATES.MICRO["L"] = [[
-#|#gg
-#|###
-#L---
-#####
+g#|#g
+g#|##
+g#L--
+g####
 ggggg
 ]]
 
 TEMPLATES.MICRO["/"] = [[
-gg#|#
-###|#
----/#
-#####
+g#|#g
+##|#g
+--/#g
+####g
 ggggg
 ]]
 
 TEMPLATES.MICRO["\\"] = [[
 ggggg
-#####
----\#
-###|#
-gg#|#
+####g
+--\#g
+##|#g
+g#|#g
 ]]
