@@ -1,77 +1,19 @@
 TEMPLATES = {
   MICRO_SIZE = {5, 5},
   MACRO_SIZE = {7, 7},
-  MICRO = {
-    [[
-ggggg
-#####
------
-#####
-ggggg
-    ]],
-
-    [[
-g#|#g
-g#|#g
-g#|#g
-g#|#g
-g#|#g
-    ]],
-
-    [[
-/####
-#----
-#|/##
-#|#gg
-#|#gg
-    ]],
-
-    [[
-#|#gg
-#|#gg
-#|###
-#\---
-#####
-    ]],
-
-    [[
-gg#|#
-gg#|#
-###|#
----/#
-#####
-    ]],
-
-    [[
-#####
----\#
-###|#
-gg#|#
-gg#|#
-    ]],
-  },
+  MICRO = {},
   MACRO = {
-    [[
-/-----\
-|ggggg|
-|ggggg|
-|ggggg|
-|ggggg|
-|ggggg|
-\-----/
-    ]]
+[[
+r--\
+]]
   },
 }
 
-
+require "templates.micro"
 
 function generateMap()
-  local rooms = {}
-  rooms.width =  TEMPLATES.MACRO_SIZE[1]
-  rooms.height = TEMPLATES.MACRO_SIZE[2]
-
   local chosen = TEMPLATES.MACRO[math.random(1, #TEMPLATES.MACRO)]
-  rooms = decipherMacro(chosen)
+  local set = decipherMacro(chosen)
 
   return generateTest()
 end
@@ -87,7 +29,50 @@ function decipherMacro(mac)
       maca[n] = (maca[n] or "") .. c
     end
   end
-  print(maca)
+
+  --Create macro table and expand all micros
+  local set = generateProperEmpty()
+  for i = 1, #maca do
+    for j = 1, #(maca[i]) do
+      local c = maca[i]:sub(j, j)
+      set = decipherMicro(set, j, i, c)
+    end
+  end
+
+  str = ""
+  for i = 1, #set do
+    for j = 1, #set[i] do
+      str = str .. set[i][j]
+    end
+    str = str .. "\n"
+  end
+
+  rawprint(str)
+
+end
+
+function decipherMicro(set, x, y, type)
+  x = ((x-1) * TEMPLATES.MICRO_SIZE[1]) + 1
+  y = ((y-1) * TEMPLATES.MICRO_SIZE[1]) + 1
+  local micro = TEMPLATES.MICRO[type]
+
+  -- Lets do some organizing!
+  local j = 0
+  local n = 0
+  for i = 1, #micro do
+    local c = micro:sub(i, i)
+    if c == "\n" then
+      j = j + 1
+      n = 0
+    else
+      local xx = n+x
+      local yy = j+y
+      set[yy][xx] = c
+      n = n +1
+    end
+  end
+
+  return set
 end
 
 function generateEmpty()
@@ -96,6 +81,18 @@ function generateEmpty()
     set[i] = {}
     for j = 1, t_world.size.y do
       set[i][j] = "Grass"
+    end
+  end
+
+  return set
+end
+
+function generateProperEmpty()
+  local set = {}
+  for i = 1, t_world.size.x do
+    set[i] = {}
+    for j = 1, t_world.size.y do
+      set[i][j] = ""
     end
   end
 

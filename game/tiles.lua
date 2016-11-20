@@ -28,7 +28,7 @@ end
 
 function createTileWorld()
   t_world = {}
-  t_world.size = {x = 20, y = 15}
+  t_world.size = {x = 20, y = 20}
   t_world.tile_size = {x = 32, y = 32}
   for i = 1, t_world.size.x do
     t_world[i] = {}
