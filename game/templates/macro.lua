@@ -1,0 +1,6 @@
+TEMPLATES.MACRO[#TEMPLATES.MACRO+1] = [[
+r-\
+|r/
+|L\
+L-/
+]]

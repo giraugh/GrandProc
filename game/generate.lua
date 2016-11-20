@@ -2,23 +2,140 @@ TEMPLATES = {
   MICRO_SIZE = {5, 5},
   MACRO_SIZE = {7, 7},
   MICRO = {},
-  MACRO = {
-[[
-r--\
-|gg|
-|gg|
-L--/
-]]
-  },
+  MACRO = {},
 }
 
 require "templates.micro"
+require "templates.macro"
 
 function generateMap()
   local chosen = TEMPLATES.MACRO[math.random(1, #TEMPLATES.MACRO)]
-  local set = decipherMacro(chosen)
+  local cset = decipherMacro(chosen)
+  local set = rasterizeCset(cset)
 
-  return generateTest()
+
+  return set
+end
+
+function rasterizeCset(cset)
+  local rasterizeCSetChar = function(char)
+    if char == "" or char == "g" then return "Grass" end
+    if char == "#" then return "Road_Grass_N" end
+    if char == "|" then return "Road_Middle_H" end
+    if char == "-" then return "Road_Middle_V" end
+    if char == "r" then return "Road_Middle_NW" end
+    if char == "L" then return "Road_Middle_NE" end
+    if char == "/" then return "Road_Middle_SE" end
+    if char == "\\" then return "Road_Middle_SW" end
+  end
+
+  --translate
+  for i = 1, #cset do
+    for j = 1, #(cset[i]) do
+      cset[i][j] = rasterizeCSetChar(cset[i][j])
+    end
+  end
+
+  --Padding
+  for i = 0, #cset+1 do
+    for j = 0, #cset+1 do
+      if i == 0 or i>#cset then
+        cset[i] = {}
+      end
+
+      if j == 0 or j>#cset then
+        cset[i][j] = "Grass"
+      end
+    end
+  end
+
+  --Orient
+  for i = 1, #cset do
+    for j = 1, #(cset[i]) do
+      local c = cset[i][j]
+      local t = c
+
+      --Grass Above?
+      if cset[i][j-1] == "Grass" and c == "Road_Grass_N" then
+        t = "Road_Grass_S"
+      end
+
+      --Grass Left?
+      if cset[i-1][j] == "Grass" and c == "Road_Grass_N" then
+        t = "Road_Grass_E"
+      end
+
+      --Grass Right?
+      if cset[i+1][j] == "Grass" and c == "Road_Grass_N" then
+        t = "Road_Grass_W"
+      end
+
+      --Grass Diag-Right-Down?
+      if cset[i+1][j+1] == "Grass"
+         and cset[i][j+1] ~= "Grass"
+         and cset[i+1][j] ~= "Grass"
+         and c == "Road_Grass_N" then
+        t = "Road_Intern_NW"
+      end
+
+      --Grass Diag-Left-Down?
+      if cset[i-1][j+1] == "Grass"
+         and cset[i][j+1] ~= "Grass"
+         and cset[i-1][j] ~= "Grass"
+         and c ~= "Grass" then
+        t = "Road_Intern_NE"
+      end
+
+      --Grass Diag-Right-Up?
+      if cset[i+1][j-1] == "Grass"
+         and cset[i][j-1] ~= "Grass"
+         and cset[i+1][j] ~= "Grass"
+         and c ~= "Grass" then
+        t = "Road_Intern_SE"
+      end
+
+      --Grass Diag-Left-Up?
+      if cset[i-1][j-1] == "Grass"
+         and cset[i][j-1] ~= "Grass"
+         and cset[i-1][j] ~= "Grass"
+         and c ~= "Grass" then
+        t = "Road_Intern_SW"
+      end
+
+      --Grass (Extern) Diag-Left-Up?
+      if cset[i-1][j-1] == "Grass"
+         and c ~= "Grass"
+         and t == "Road_Grass_W" then
+        t = "Road_Extern_NE"
+      end
+
+      --Grass (Extern) Diag-Right-Up?
+      if cset[i+1][j-1] == "Grass"
+         and c ~= "Grass"
+         and t == "Road_Grass_E" then
+        t = "Road_Extern_NW"
+      end
+
+      --Grass (Extern) Diag-Left-Down?
+      if cset[i-1][j+1] == "Grass"
+         and c ~= "Grass"
+         and t == "Road_Grass_W" then
+        t = "Road_Extern_SE"
+      end
+
+      --Grass (Extern) Diag-Right-Down?
+      if cset[i+1][j+1] == "Grass"
+         and c ~= "Grass"
+         and t == "Road_Grass_E" then
+        t = "Road_Extern_SW"
+      end
+
+      --set
+      cset[i][j] = t
+    end
+  end
+
+  return cset
 end
 
 function decipherMacro(mac)
@@ -42,6 +159,7 @@ function decipherMacro(mac)
     end
   end
 
+  -- DEBUG DISPLAY --
   str = ""
   for i = 1, #set do
     for j = 1, #set[i] do
@@ -49,9 +167,9 @@ function decipherMacro(mac)
     end
     str = str .. "\n"
   end
-
   rawprint(str)
 
+  return set
 end
 
 function decipherMicro(set, x, y, type)

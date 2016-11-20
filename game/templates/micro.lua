@@ -1,4 +1,4 @@
-TEMPLATES.MICRO["g"] = [[
+TEMPLATES.MICRO[" "] = [[
 ggggg
 ggggg
 ggggg
@@ -24,9 +24,9 @@ g#|#g
 
 TEMPLATES.MICRO["r"] = [[
 ggggg
-gr###
-g#---
-g#|r#
+g####
+g#r--
+g#|##
 g#|#g
 ]]
 
