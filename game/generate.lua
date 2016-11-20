@@ -1,17 +1,29 @@
 function generateMap()
-  set = {}
+  return generateTest()
+end
+
+function generateEmpty()
+  local set = {}
   for i = 1, t_world.size.x do
     set[i] = {}
     for j = 1, t_world.size.y do
-      set[i][j] = generateTile(i, j)
+      set[i][j] = "Grass"
     end
   end
 
   return set
 end
 
-function generateTile(x, y)
-  return testMap(x, y)
+function generateTest()
+  local set = {}
+  for i = 1, t_world.size.x do
+    set[i] = {}
+    for j = 1, t_world.size.y do
+      set[i][j] = testMap(i, j)
+    end
+  end
+
+  return set
 end
 
 function testMap(x, y)
