@@ -44,7 +44,7 @@ function rasterizeCset(cset)
       end
 
       if j == 0 or j>#cset then
-        cset[i][j] = "Grass"
+        cset[i][j] = "Road_Middle_H"
       end
     end
   end

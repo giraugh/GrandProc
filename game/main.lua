@@ -9,6 +9,9 @@ require "generate"
 require "car"
 
 function love.load()
+  --Seed Random
+  math.randomseed(os.time())
+
   --Create Background
   createTileWorld()
 
