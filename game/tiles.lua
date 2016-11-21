@@ -50,7 +50,7 @@ for i, tile in pairs(TILES) do
 end
 
 t_world = {}
-t_world.size = {x = 20, y = 20}
+t_world.size = {x = 50, y = 50}
 t_world.tile_size = {x = 32, y = 32}
 t_world.tile_scale = {2, 2}
 for i = 1, t_world.size.x do

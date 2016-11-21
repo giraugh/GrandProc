@@ -78,7 +78,7 @@ function updateCar(car, delta)
 
   terrainFriction = 1
   if car:getTileAtFeet() == "Grass" then
-    terrainFriction = 10
+    terrainFriction = 2
   end
 
   -- calculate rolling friction
