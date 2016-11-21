@@ -16,8 +16,9 @@ function love.load()
   createTileWorld()
 
   --Generate Map
-  set = generateMap()
+  local set, dset = generateMap()
   setTileWorldFromSet(set)
+  setDetailWorldFromSet(dset)
 
   --Create Players
   car1 = newCar(10, 10, IMAGE_CAR_BLUE)

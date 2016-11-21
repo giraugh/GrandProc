@@ -1,5 +1,7 @@
 -- Tile Quads
 TILES = {
+
+  --BG TILES
   Grass =          {0, 0},
   Road_Grass_E =   {1, 0},
   Road_Grass_W =   {2, 0},
@@ -19,7 +21,28 @@ TILES = {
   Road_Extern_NW = {3, 0},
   Road_Extern_SE = {4, 1},
   Road_Extern_SW = {3, 1},
+
+  --DETAILS
+  Tree_Stump =       {6, 3},
+  Tree_Trunk =       {6, 2},
+  Tree_Canopy_CD_1 = {6, 1},
+  Tree_Canopy_CU_1 = {6, 0},
+  Tree_Canopy_LD_1 = {5, 1},
+  Tree_Canopy_RD_1 = {7, 1},
+  Tree_Canopy_LU_1 = {5, 0},
+  Tree_Canopy_RU_1 = {7, 0},
+  Tree_Canopy_CD_2 = {3, 5},
+  Tree_Canopy_CU_2 = {3, 4},
+  Tree_Canopy_LD_2 = {2, 5},
+  Tree_Canopy_RD_2 = {4, 5},
+  Tree_Canopy_LU_2 = {2, 4},
+  Tree_Canopy_RU_2 = {4, 4},
+  Bush_1_Left =      {2, 2},
+  Bush_1_Right =     {3, 2},
+  Bush_2_Left =      {0, 5},
+  Bush_2_Right =     {1, 5},
 }
+
 
 -- Make Quad Defs above into actual quads
 for i, tile in pairs(TILES) do
@@ -33,15 +56,33 @@ function createTileWorld()
   for i = 1, t_world.size.x do
     t_world[i] = {}
     for j = 1, t_world.size.y do
-      t_world[i][j] = {x = i, y = j, name = "Grass", back = true}
+      t_world[i][j] = {x = i, y = j, name = "Grass"}
     end
   end
+
+  --Details
+  t_world.details = {}
+  for i = 1, t_world.size.x do
+    t_world.details[i] = {}
+    for j = 1, t_world.size.y do
+      t_world.details[i][j] = {x = i, y = j, name = "None"}
+    end
+  end
+
 end
 
 function setTileWorldFromSet(set)
   for i = 1, t_world.size.x do
     for j = 1, t_world.size.y do
       t_world[i][j].name = set[i][j]
+    end
+  end
+end
+
+function setDetailWorldFromSet(set)
+  for i = 1, t_world.size.x do
+    for j = 1, t_world.size.y do
+      t_world.details[i][j].name = set[i][j]
     end
   end
 end
@@ -60,11 +101,7 @@ function drawTileWorldBackground()
     for j = 1, t_world.size.y do
       --Get Tile from Co-Ord
       local t = t_world[i][j]
-
-      --Is it in the background?
-      if t.back then
-        love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x, j * t_world.tile_size.y)
-      end
+      love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x, j * t_world.tile_size.y)
     end
   end
 end
@@ -73,10 +110,8 @@ function drawTileWorldForeground()
   for i = 1, t_world.size.x do
     for j = 1, t_world.size.y do
       --Get Tile from Co-Ord
-      local t = t_world[i][j]
-
-      --Is it in the foreground?
-      if not t.back then
+      local t = t_world.details[i][j]
+      if t.name ~= "None" then
         love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x, j * t_world.tile_size.y)
       end
     end

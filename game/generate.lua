@@ -5,16 +5,107 @@ TEMPLATES = {
   MACRO = {},
 }
 
+--DETAIL CHANCES
+BUSH_CHANCE = .1
+TREE_CHANCE = .05
+
 require "templates.micro"
 require "templates.macro"
 
 function generateMap()
+  --TEMPLATES
   local chosen = TEMPLATES.MACRO[math.random(1, #TEMPLATES.MACRO)]
   local cset = decipherMacro(chosen)
   local set = rasterizeCset(cset)
 
+  --DETAILS
+  local dset = generateDetailEmpty()
 
-  return set
+  --Padding
+  for i = 0, #set+1 do
+    for j = 0, #set+1 do
+      if i == 0 or i>#set then
+        set[i] = {}
+      end
+
+      if j == 0 or j>#dset then
+        set[i][j] = "None"
+      end
+    end
+  end
+
+  --Padding
+  for i = 0, #dset+1 do
+    for j = 0, #dset+1 do
+      if i == 0 or i>#dset then
+        dset[i] = {}
+      end
+
+      if j == 0 or j>#dset then
+        dset[i][j] = "None"
+      end
+    end
+  end
+
+  --find grass and put stuff on it
+  for i = 1, #set do
+    for j = 1, #(set[i]) do
+
+      --Bush 1
+      if math.random() < BUSH_CHANCE/2 then
+        if set[i][j] == "Grass" and set[i+1][j] == "Grass" then
+          if dset[i][j] == "None" and dset[i+1][j] == "None" then
+            dset[i][j] =   "Bush_1_Left"
+            dset[i+1][j] = "Bush_1_Right"
+          end
+        end
+
+      --Bush 2
+      elseif math.random() < BUSH_CHANCE/2 then
+        if set[i][j] == "Grass" and set[i+1][j] == "Grass" then
+          if dset[i][j] == "None" and dset[i+1][j] == "None" then
+            dset[i][j] =   "Bush_2_Left"
+            dset[i+1][j] = "Bush_2_Right"
+          end
+        end
+
+      elseif math.random() < TREE_CHANCE then
+        if set[i][j] == "Grass"
+        and set[i][j-1] == "Grass" then
+          if dset[i][j] == "None"
+          and dset[i][j-1] == "None"
+          and dset[i-1][j] == "None"
+          and dset[i+1][j] == "None"
+          and dset[i-1][j-1] == "None"
+          and dset[i+1][j-1] == "None"
+          and dset[i-1][j-2] == "None"
+          and dset[i+1][j-2] == "None" then
+            --decide on type
+            local type
+            if math.random() < .5 then type = 1 else type = 2 end
+
+            --decide on high
+            local isHigh
+            if math.random() < .5 then isHigh = 0 else isHigh = 1 end
+
+            dset[i][j] = "Tree_Stump"
+            if isHigh == 1 then dset[i][j-1] = "Tree_Trunk" end
+            dset[i][j-(1+isHigh)] = "Tree_Canopy_CD_"..type
+            dset[i-1][j-(1+isHigh)] = "Tree_Canopy_LD_"..type
+            dset[i+1][j-(1+isHigh)] = "Tree_Canopy_RD_"..type
+            dset[i][j-(2+isHigh)] = "Tree_Canopy_CU_"..type
+            dset[i-1][j-(2+isHigh)] = "Tree_Canopy_LU_"..type
+            dset[i+1][j-(2+isHigh)] = "Tree_Canopy_RU_"..type
+          end
+        end
+      end
+
+
+    end
+  end
+
+  --RETURNS
+  return set, dset
 end
 
 function rasterizeCset(cset)
@@ -202,6 +293,18 @@ function generateEmpty()
     set[i] = {}
     for j = 1, t_world.size.y do
       set[i][j] = "Grass"
+    end
+  end
+
+  return set
+end
+
+function generateDetailEmpty()
+  local set = {}
+  for i = 1, t_world.size.x do
+    set[i] = {}
+    for j = 1, t_world.size.y do
+      set[i][j] = "None"
     end
   end
 
