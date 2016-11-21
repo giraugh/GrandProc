@@ -1,19 +1,18 @@
 --ext
 require "ext.TSerial"
 require "ext.console"
+Gamera = require "ext.gamera"
 
 --script
 require "graphics.import"
 require "tiles"
+require "camera"
 require "generate"
 require "car"
 
 function love.load()
   --Seed Random
   math.randomseed(os.time())
-
-  --Create Background
-  createTileWorld()
 
   --Generate Map
   local set, dset = generateMap()
@@ -30,18 +29,26 @@ function love.update(dt)
   --Update Players
   updateCar(car1, dt)
   updateCar(car2, dt)
+
+  --Update Camera Tracking
+  updateCamera()
 end
 
 function love.draw()
-  --Draw Background
-  drawTileWorldBackground()
+  world = function()
+    --Draw Background
+    drawTileWorldBackground()
 
-  --Draw Cars
-  drawCar(car1)
-  drawCar(car2)
+    --Draw Cars
+    drawCar(car1)
+    drawCar(car2)
 
-  --Draw Foreground
-  drawTileWorldForeground()
+    --Draw Foreground
+    drawTileWorldForeground()
+  end
+
+  --draw world
+  Camera:draw(world)
 
   --Draw Console
   trace.draw()

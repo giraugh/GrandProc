@@ -49,26 +49,24 @@ for i, tile in pairs(TILES) do
   TILES[i] = love.graphics.newQuad(tile[1] * 32, tile[2] * 32, 32, 32, IMAGE_TILES:getWidth(), IMAGE_TILES:getHeight())
 end
 
-function createTileWorld()
-  t_world = {}
-  t_world.size = {x = 20, y = 20}
-  t_world.tile_size = {x = 32, y = 32}
-  for i = 1, t_world.size.x do
-    t_world[i] = {}
-    for j = 1, t_world.size.y do
-      t_world[i][j] = {x = i, y = j, name = "Grass"}
-    end
+t_world = {}
+t_world.size = {x = 20, y = 20}
+t_world.tile_size = {x = 32, y = 32}
+t_world.tile_scale = {2, 2}
+for i = 1, t_world.size.x do
+  t_world[i] = {}
+  for j = 1, t_world.size.y do
+    t_world[i][j] = {x = i, y = j, name = "Grass"}
   end
+end
 
-  --Details
-  t_world.details = {}
-  for i = 1, t_world.size.x do
-    t_world.details[i] = {}
-    for j = 1, t_world.size.y do
-      t_world.details[i][j] = {x = i, y = j, name = "None"}
-    end
+--Details
+t_world.details = {}
+for i = 1, t_world.size.x do
+  t_world.details[i] = {}
+  for j = 1, t_world.size.y do
+    t_world.details[i][j] = {x = i, y = j, name = "None"}
   end
-
 end
 
 function setTileWorldFromSet(set)
@@ -101,7 +99,7 @@ function drawTileWorldBackground()
     for j = 1, t_world.size.y do
       --Get Tile from Co-Ord
       local t = t_world[i][j]
-      love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x, j * t_world.tile_size.y)
+      love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x * t_world.tile_scale[1], j * t_world.tile_size.y * t_world.tile_scale[2], 0, t_world.tile_scale[1], t_world.tile_scale[2])
     end
   end
 end
@@ -112,7 +110,7 @@ function drawTileWorldForeground()
       --Get Tile from Co-Ord
       local t = t_world.details[i][j]
       if t.name ~= "None" then
-        love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x, j * t_world.tile_size.y)
+        love.graphics.draw(IMAGE_TILES, TILES[t.name], i * t_world.tile_size.x * t_world.tile_scale[1], j * t_world.tile_size.y * t_world.tile_scale[2], 0, t_world.tile_scale[1], t_world.tile_scale[2])
       end
     end
   end

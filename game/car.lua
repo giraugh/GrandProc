@@ -15,7 +15,7 @@ CAR_MASS = 1500                     -- Mass of car in kg
 
 CAR_REVERSE_ACCELERATION_SPEED = 60 -- Speed gained per second
 
-LOOP_SCREEN = true
+LOOP_SCREEN = false
 PRINT_SPEED = true
 
 -- HELPER FUNCTIONS --
@@ -78,7 +78,7 @@ function updateCar(car, delta)
 
   terrainFriction = 1
   if car:getTileAtFeet() == "Grass" then
-    terrainFriction = 3
+    terrainFriction = 10
   end
 
   -- calculate rolling friction
