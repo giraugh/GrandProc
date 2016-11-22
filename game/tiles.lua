@@ -86,8 +86,8 @@ function setDetailWorldFromSet(set)
 end
 
 function tileAtPosition(x, y)
-  x = math.floor(x / 32)
-  y = math.floor(y / 32)
+  x = math.floor(x / (32 * t_world.tile_scale[1]))
+  y = math.floor(y / (32 * t_world.tile_scale[2]))
   if (x <= 0 or x >= t_world.size.x or y <= 0 or y >= t_world.size.y) then
     return nil
   end
